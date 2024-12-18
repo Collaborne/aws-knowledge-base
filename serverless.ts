@@ -1,8 +1,8 @@
 import { Variables } from '@collaborne/starburst-utils';
 import type { AWS } from '@serverless/typescript';
 
-import Hello from './src/functions/hello';
-import ExampleBucket from './src/resources/example-bucket';
+import KnowledgeBaseTest from './src/functions/knowledge-base-test';
+import KnowledgeBaseBucket from './src/resources/knowledge-base-bucket';
 
 const serverlessConfiguration: AWS = {
 	service: 'serverless-project-template',
@@ -15,7 +15,7 @@ const serverlessConfiguration: AWS = {
 	provider: {
 		name: 'aws',
 		runtime: 'nodejs14.x',
-		region: 'eu-west-1',
+		region: 'eu-central-1',
 		stage: Variables.STAGE,
 		environment: {
 			STAGE: Variables.STAGE,
@@ -35,12 +35,12 @@ const serverlessConfiguration: AWS = {
 	},
 	// import the function via paths
 	functions: {
-		Hello,
+		KnowledgeBaseTest,
 	},
 	resources: {
 		Conditions: {},
 		Resources: {
-			...ExampleBucket.resources,
+			...KnowledgeBaseBucket.resources,
 		},
 		Outputs: {},
 	},

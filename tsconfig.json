@@ -1,4 +1,4 @@
 {
-	"extends": "tsconfig-collaborne",
+	"extends": "./node_modules/tsconfig-collaborne/tsconfig.json",
 	"include": ["src/**/*", "serverless.ts"],
 }

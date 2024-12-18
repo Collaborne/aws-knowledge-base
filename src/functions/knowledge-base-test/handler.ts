@@ -13,7 +13,8 @@ export type HandlerEvent = {
 const s3 = new S3();
 
 export function createHandler(awsClient: AWSClient): Handler<HandlerEvent> {
-	return async event => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return async (event: { key: any }) => {
 		const { key } = event;
 		await awsClient.putObject({
 			key,

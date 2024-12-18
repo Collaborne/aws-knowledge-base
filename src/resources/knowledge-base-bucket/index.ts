@@ -1,4 +1,4 @@
-const NAME = 'ExampleBucket';
+const NAME = 'KnowledgeBaseBucket';
 
 const resources = {
 	[NAME]: {

@@ -1,8 +1,8 @@
-import ExampleBucket from './example-bucket';
+import KnowledgeBaseBucket from './knowledge-base-bucket';
 
-export const ExampleVariables = {
-	ExampleBucket: {
-		Name: { Ref: ExampleBucket.name },
-		Arn: { 'Fn::GetAtt': [ExampleBucket.name, 'Arn'] },
+export const Variables = {
+	KnowledgeBaseBucket: {
+		Name: { Ref: KnowledgeBaseBucket.name },
+		Arn: { 'Fn::GetAtt': [KnowledgeBaseBucket.name, 'Arn'] },
 	},
 };
