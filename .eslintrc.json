@@ -1,0 +1,7 @@
+{
+	"extends": "eslint-config-collaborne",
+	"rules": {
+		// This rule disabled because we provider CloudFormation template inside typescript.
+		"no-template-curly-in-string": "off"
+	}
+}

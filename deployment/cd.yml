@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    NPM_TOKEN: arn:aws:secretsmanager:eu-west-1:499577160181:secret:/CodeBuild/npmjs/collaborne-team:NPM_TOKEN
+  
+  exported-variables:
+    - REGION
+    - ROLE_ARN
+    - EXTERNAL_ID
+    - ENVIRONMENT
+    - PARTITION
+phases:
+  install:
+    commands:
+      - |-
+        echo "Installing required NodeJS version" >&2
+        n 18
+  pre_build:
+    commands:
+      - |-
+        set -e
+        if [ ! -z $ROLE_ARN ]; then
+          ROLE_SESSION_NAME="carrot-media-clipping-cd-$PARTITION"
+          TEMP_ROLE=$(aws sts assume-role --role-arn $ROLE_ARN --external-id $EXTERNAL_ID --role-session-name $ROLE_SESSION_NAME)
+          export TEMP_ROLE
+          export AWS_ACCESS_KEY_ID=$(echo "${TEMP_ROLE}" | jq -r ".Credentials.AccessKeyId")
+          export AWS_SECRET_ACCESS_KEY=$(echo "${TEMP_ROLE}" | jq -r ".Credentials.SecretAccessKey")
+          export AWS_SESSION_TOKEN=$(echo "${TEMP_ROLE}" | jq -r ".Credentials.SessionToken")
+          export AWS_REGION=${REGION}
+        fi 
+      # Check for Assume Role
+      - aws sts get-caller-identity
+      - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+      - npm ci --unsafe-perm
+  build:
+    commands:
+      - npx serverless print --param=environment=$ENVIRONMENT --param=partition=$PARTITION --stage="$ENVIRONMENT-$PARTITION"
+      - npx serverless deploy --param=environment=$ENVIRONMENT --param=partition=$PARTITION --stage="$ENVIRONMENT-$PARTITION" --verbose
+      

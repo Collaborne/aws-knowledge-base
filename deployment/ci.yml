@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    NPM_TOKEN: arn:aws:secretsmanager:eu-west-1:499577160181:secret:/CodeBuild/npmjs/collaborne-team:NPM_TOKEN
+phases:
+  install:
+    commands:
+      - |-
+        echo "Installing required NodeJS version" >&2
+        n 18
+  pre_build:
+    commands:
+      - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+      - npm ci --unsafe-perm
+  build:
+    commands:
+      - npm run test
+      - npx serverless package --param=environment=main --param=partition=test --stage=main-test --verbose
+  post_build:
+    commands:
+      - |
+        export TAG=$(git describe --tags --exact-match HEAD 2>/dev/null)
+        if [ -z "$TAG" ]; then
+          export TAG="main"
+        fi
+        echo $TAG > "${TAG}"
+artifacts:
+  files:
+    - '$TAG'
+  discard-paths: no
+reports:
+  test:
+    files:
+      - junit.xml
+    file-format: JunitXml

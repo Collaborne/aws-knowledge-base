@@ -1,0 +1,9 @@
+.vscode/
+node_modules/
+.serverless
+.starburst
+junit.xml
+.DS_Store
+coverage/
+gh-pages-dist/
+params.json

@@ -1,0 +1,59 @@
+{
+	"name": "serverless-project-template",
+	"version": "1.0.0",
+	"description": "Serverless aws-nodejs-typescript template",
+	"author": "Collaborne",
+	"license": "UNLICENSED",
+	"main": "serverless.ts",
+	"scripts": {
+		"test": "npm run lint && npm run test:unit",
+		"test:unit": "jest --maxWorkers=50%",
+		"lint": "eslint \"**/*.ts\"",
+		"dev:prepare-env": "AWS_REGION=${AWS_REGION:-$(aws configure get region)} prepare-env",
+		"version": "test \"${SKIP_REVIEW_HISTORY}\" = \"true\" || npm run -s version:review-history --old_package_version=$(cat .preversion.txt) || (unzip -oq .preversion-backup.zip; rm -f .preversion.txt .preversion-backup.zip)",
+		"preversion": "echo ${npm_package_version} > .preversion.txt; zip -q .preversion-backup.zip package.json package-lock.json",
+		"version:review-history": "test -d .git && git log --oneline $(git describe --abbrev=0)^...; echo \"Ok to create version '${npm_package_version}' (currently '${npm_config_old_package_version}')? (y/n)?\"; read -r CONFIRM && echo \"${CONFIRM}\" | grep -e '^[yY]$' >/dev/null 2>&1",
+		"postversion": "rm -f .preversion.txt .preversion-backup.zip"
+	},
+	"engines": {
+		"node": ">=14.15.0"
+	},
+	"dependencies": {
+		"@collaborne/starburst-aws": "^1.7.4",
+		"@collaborne/starburst-utils": "^1.5.9",
+		"aws-sdk": "^2.1296.0"
+	},
+	"devDependencies": {
+		"@collaborne/version-info": "^1.5.4",
+		"@serverless/typescript": "^3.0.0",
+		"@types/aws-lambda": "^8.10.71",
+		"@types/jest": "^27.4.1",
+		"@types/node": "^14.14.25",
+		"@types/serverless": "^3.12.9",
+		"esbuild": "^0.14.11",
+		"eslint": "^8.22.0",
+		"eslint-config-collaborne": "^5.4.3",
+		"jest": "^29.6.1",
+		"jest-junit": "^13.0.0",
+		"serverless": "^3.26.0",
+		"serverless-esbuild": "^1.23.3",
+		"serverless-iam-roles-per-function": "^3.2.0",
+		"serverless-plugin-required-option": "^3.0.1",
+		"ts-jest": "^29.1.1",
+		"ts-node": "^10.4.0",
+		"tsconfig-collaborne": "^1.8.1",
+		"tsconfig-paths": "^3.9.0",
+		"typescript": "^5.1.6"
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"testMatch": [
+			"<rootDir>/src/**/*.spec.ts"
+		],
+		"reporters": [
+			"default",
+			"jest-junit"
+		]
+	}
+}
